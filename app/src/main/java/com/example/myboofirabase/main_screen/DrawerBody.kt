@@ -39,6 +39,7 @@ import com.google.firebase.ktx.Firebase
 
 @Composable
 fun DrawerBody(
+    onAdminClick: () -> Unit = {}
 
 ) {
     val categoriesList = listOf(
@@ -52,15 +53,16 @@ fun DrawerBody(
         mutableStateOf(false)
     }
     LaunchedEffect(Unit) {
-        isAdmin {
-            isAdmin ->
+        isAdmin { isAdmin ->
             isAdminState.value = isAdmin
         }
 
     }
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(ButtonColor)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(ButtonColor)
+    ) {
         Image(
             modifier = Modifier.fillMaxSize(),
             painter = painterResource(R.drawable.menu),
@@ -111,21 +113,23 @@ fun DrawerBody(
                     }
                 }
             }
-            if(isAdminState.value)Button(onClick = {}, modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp),
+            if (isAdminState.value) Button(
+                onClick = { onAdminClick() }, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = DarkTransparentBlue
-                )) {
-                Text(text="Admin panel")
+                )
+            ) {
+                Text(text = "Admin panel")
             }
         }
     }
 }
 
-fun isAdmin(onAdmin:(Boolean)-> Unit){
+fun isAdmin(onAdmin: (Boolean) -> Unit) {
     val uid = Firebase.auth.currentUser!!.uid
     Firebase.firestore.collection("admin").document(uid).get().addOnSuccessListener {
-        onAdmin(it.get("isAdmin")as Boolean)
+        onAdmin(it.get("isAdmin") as Boolean)
     }
 }
