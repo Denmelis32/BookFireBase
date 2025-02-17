@@ -14,6 +14,8 @@ import com.example.myboofirabase.ui.theme.ButtonColor
 
 @Composable
 fun RoudedCornerTextField(
+    maxLines: Int = 1,
+    singLine: Boolean = true,
     text: String,
     label:String,
     onValueChange: (String) -> Unit,
@@ -34,6 +36,7 @@ fun RoudedCornerTextField(
         label = {
             Text(text = label, color = Color.Gray)
         },
-        singleLine = true
+        singleLine = singLine,
+        maxLines = maxLines
      )
 }

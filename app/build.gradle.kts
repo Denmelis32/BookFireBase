@@ -45,7 +45,7 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlin.serialization.json)
-
+    implementation ("io.coil-kt:coil-compose:2.2.2") // Проверьте последнюю версию на сайте Coil
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.storage)
