@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myboofirabase.R
+import com.example.myboofirabase.ui.theme.ButtonColor
 import com.example.myboofirabase.ui.theme.GrayLine
 
 
@@ -36,7 +37,7 @@ fun DrawerBody(
         "Drama",
         "Bestsellers"
     )
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().background(ButtonColor)) {
         Image(
             modifier = Modifier.fillMaxSize(),
             painter = painterResource(R.drawable.menu),
