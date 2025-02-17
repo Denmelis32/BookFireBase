@@ -1,8 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.gms)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.plugin.serialization)
 }
 
 android {
@@ -41,6 +42,10 @@ android {
 }
 
 dependencies {
+
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlin.serialization.json)
+
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.storage)
