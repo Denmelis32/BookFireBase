@@ -51,10 +51,10 @@ fun LoginScreen(
         mutableStateOf("")
     }
     val emailState = remember {
-        mutableStateOf("")
+        mutableStateOf("denmelis@gmail.ru")
     }
     val passwordState = remember {
-        mutableStateOf("")
+        mutableStateOf("12345678")
     }
     Image(
         painter = painterResource(id = R.drawable.books), contentDescription = "BG",

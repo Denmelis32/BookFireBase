@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                 }
                 composable<MainScreenDataObeject> { navEntry ->
                     val navData = navEntry.toRoute<MainScreenDataObeject>()
-                    MainScreen()
+                    MainScreen(navData)
                 }
 
             }

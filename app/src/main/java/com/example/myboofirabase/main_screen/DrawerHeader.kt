@@ -20,10 +20,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myboofirabase.R
 import com.example.myboofirabase.ui.theme.DarkBlue
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 
 @Composable
-fun DrawerHeader() {
+fun DrawerHeader(email:String) {
     Column(
         Modifier.fillMaxWidth()
             .height(170.dp)
@@ -35,10 +38,17 @@ fun DrawerHeader() {
                 painter = painterResource(R.drawable.books), contentDescription = "" )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = "Melekhov Book",
+                email,
                 color = Color.White,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
             )
+        Text(
+            text = "Melekhov Book",
+            color = Color.Gray,
+            fontSize = 16.sp,
+
+        )
     }
 }
+

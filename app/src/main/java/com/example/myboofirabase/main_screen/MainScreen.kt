@@ -13,19 +13,20 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.myboofirabase.login.data.MainScreenDataObeject
 import com.example.myboofirabase.main_screen.button_menu.BottomMenu
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@Preview(showBackground = true)
+
 @Composable
-fun MainScreen() {
+fun MainScreen(navData: MainScreenDataObeject) {
     val drawerState = rememberDrawerState(DrawerValue.Open)
     ModalNavigationDrawer(
         drawerState = drawerState,
         modifier = Modifier.fillMaxWidth(),
         drawerContent = {
             Column(modifier = Modifier.fillMaxWidth(0.7f)) {
-                DrawerHeader()
+                DrawerHeader(navData.email )
                 DrawerBody()
             }
 
