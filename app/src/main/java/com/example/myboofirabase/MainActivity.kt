@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myboofirabase.data.Book
 import com.example.myboofirabase.login.LoginScreen
+import com.example.myboofirabase.main_screen.MainScreen
 import com.example.myboofirabase.ui.theme.MyBooFiraBaseTheme
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -35,7 +36,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            LoginScreen()
+            MainScreen()
         }
     }
 }
