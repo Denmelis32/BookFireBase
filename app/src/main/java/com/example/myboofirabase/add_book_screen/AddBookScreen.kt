@@ -1,7 +1,10 @@
+
+
 package com.example.myboofirabase.add_book_screen
 
+import android.content.ContentResolver
 import android.net.Uri
-import android.util.EventLogTags.Description
+import android.util.Base64
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -43,28 +47,30 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 
-@Preview(showBackground = true)
+
 @Composable
 fun AddBookScreen(
-    onSaved: () -> Unit = {}
+    onSaved: () -> Unit = {},
+    onError: () -> Unit = {}
 ) {
+    val cv = LocalContext.current.contentResolver
     var selectedCategory = "Bestsellers"
     val title = remember { mutableStateOf("") }
     val description = remember { mutableStateOf("") }
     val price = remember { mutableStateOf("") }
-    val selectedImageUr = remember { mutableStateOf<Uri?>(null) }
+    val selectedImageUri = remember { mutableStateOf<Uri?>(null) }
 
     val firestore = remember { Firebase.firestore }
 
     val imageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
-        selectedImageUr.value = uri
+        selectedImageUri.value = uri
     }
 
     Image(
-        painter = rememberAsyncImagePainter(model = selectedImageUr.value),
-        contentDescription = "BG",
+        painter = rememberAsyncImagePainter(model = selectedImageUri.value),
+        contentDescription = "Background",
         modifier = Modifier.fillMaxSize(),
         contentScale = ContentScale.Crop,
         alpha = 0.4f
@@ -73,7 +79,7 @@ fun AddBookScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(BoxFilerColor)
+            .background(Color.Gray) // Замените на ваш цвет
     )
 
     Column(
@@ -93,6 +99,7 @@ fun AddBookScreen(
             fontFamily = FontFamily.Serif,
         )
         Spacer(modifier = Modifier.height(10.dp))
+
         RoudedCornerTextField(
             text = title.value,
             label = "Title"
@@ -100,6 +107,7 @@ fun AddBookScreen(
             title.value = it
         }
         Spacer(modifier = Modifier.height(10.dp))
+
         RoudedCornerTextField(
             text = price.value,
             label = "Price"
@@ -107,49 +115,51 @@ fun AddBookScreen(
             price.value = it
         }
         Spacer(modifier = Modifier.height(10.dp))
+
         RoudedCornerDropMenu { selectedItem ->
             selectedCategory = selectedItem
         }
         Spacer(modifier = Modifier.height(10.dp))
+
         RoudedCornerTextField(
             maxLines = 5,
             singLine = false,
-            text = description.value,
-            label = "Description"
+        text = description.value,
+        label = "Description"
         ) {
-            description.value = it
-        }
+        description.value = it
+    }
         Spacer(modifier = Modifier.height(10.dp))
 
         LoginButton(text = "Select Image") {
             imageLauncher.launch("image/*")
         }
         LoginButton(text = "Save") {
-            val book = Book(
-                key = "", // ключ будет сгенерирован в Firestore
-                name = title.value,
-                description = description.value,
-                price = price.value,
-                category = selectedCategory,
-                imageUrl = selectedImageUr.value?.toString() ?: ""
-            )
-
-            saveBookTopFireStore(
-                firestore = firestore,
-                book = book,
-                onSaved = {
-                    // Здесь можно добавить логику, например, показать сообщение об успешном сохранении
-                    onSaved() // Вызов функции обратного вызова, если нужно
-                },
-                onError = {
-                    // Здесь можно обработать ошибки, например, показать сообщение об ошибке
-                }
+            saveBookToFirestore(
+                firestore,
+                Book(
+                    name = title.value,
+                    description = description.value,
+                    price = price.value,
+                    category = selectedCategory,
+                    imageUrl = imageToBase64(selectedImageUri.value!!, cv)
+                ),
+                onSaved = onSaved,
+                onError = onError
             )
         }
     }
 }
 
-private fun saveBookTopFireStore(
+private fun imageToBase64(uri: Uri, contentResolver: ContentResolver): String {
+    val inputStream = contentResolver.openInputStream(uri)
+    val bytes = inputStream?.readBytes()
+    return bytes?.let {
+        Base64.encodeToString(it, Base64.DEFAULT)
+    } ?: ""
+}
+
+private fun saveBookToFirestore(
     firestore: FirebaseFirestore,
     book: Book,
     onSaved: () -> Unit,
