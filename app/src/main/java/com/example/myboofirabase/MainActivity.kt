@@ -44,24 +44,36 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-           val navController = rememberNavController()
+            val navController = rememberNavController()
 
-            NavHost(navController = navController, startDestination = LoginSreenObject){
+            NavHost(navController = navController, startDestination = LoginSreenObject) {
                 composable<LoginSreenObject> {
-                    LoginScreen{
-                        navData ->navController.navigate(navData)
+                    LoginScreen { navData ->
+                        navController.navigate(navData)
                     }
                 }
                 composable<MainScreenDataObeject> { navEntry ->
                     val navData = navEntry.toRoute<MainScreenDataObeject>()
-                    MainScreen(navData){
-                        navController.navigate(AddScreenObject)
+                    MainScreen(navData,
+                        onBookEditClick = { book ->
+                            navController.navigate(
+                                AddScreenObject(
+                                    key = book.key,
+                                    name = book.name,
+                                    description = book.description,
+                                    price = book.price,
+                                    imageUrl = book.imageUrl
+
+
+                                )
+                            )
+                        }) {
+                        navController.navigate(AddScreenObject())
                     }
                 }
                 composable<AddScreenObject> { navEntry ->
-                    AddBookScreen{
-                        navController.popBackStack()
-                    }
+                    val navData = navEntry.toRoute<AddScreenObject>()
+                    AddBookScreen (navData)
                 }
 
             }

@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.myboofirabase.R
 import com.example.myboofirabase.data.Book
+import com.example.myboofirabase.datas.AddScreenObject
 import com.example.myboofirabase.login.LoginButton
 import com.example.myboofirabase.login.RoudedCornerTextField
 import com.example.myboofirabase.login.signIn
@@ -50,14 +51,15 @@ import com.google.firebase.storage.FirebaseStorage
 
 @Composable
 fun AddBookScreen(
+    navData:AddScreenObject? = AddScreenObject(),
     onSaved: () -> Unit = {},
     onError: () -> Unit = {}
 ) {
     val cv = LocalContext.current.contentResolver
     var selectedCategory = "Bestsellers"
-    val title = remember { mutableStateOf("") }
-    val description = remember { mutableStateOf("") }
-    val price = remember { mutableStateOf("") }
+    val title = remember { mutableStateOf(navData?.name) }
+    val description = remember { mutableStateOf(navData?.description) }
+    val price = remember { mutableStateOf(navData?.price) }
     val selectedImageUri = remember { mutableStateOf<Uri?>(null) }
 
     val firestore = remember { Firebase.firestore }
@@ -100,19 +102,23 @@ fun AddBookScreen(
         )
         Spacer(modifier = Modifier.height(10.dp))
 
-        RoudedCornerTextField(
-            text = title.value,
-            label = "Title"
-        ) {
-            title.value = it
+        title.value?.let {
+            RoudedCornerTextField(
+                text = it,
+                label = "Title"
+            ) {
+                title.value = it
+            }
         }
         Spacer(modifier = Modifier.height(10.dp))
 
-        RoudedCornerTextField(
-            text = price.value,
-            label = "Price"
-        ) {
-            price.value = it
+        price.value?.let {
+            RoudedCornerTextField(
+                text = it,
+                label = "Price"
+            ) {
+                price.value = it
+            }
         }
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -121,14 +127,16 @@ fun AddBookScreen(
         }
         Spacer(modifier = Modifier.height(10.dp))
 
-        RoudedCornerTextField(
-            maxLines = 5,
-            singLine = false,
-        text = description.value,
-        label = "Description"
-        ) {
-        description.value = it
-    }
+        description.value?.let {
+            RoudedCornerTextField(
+                maxLines = 5,
+                singLine = false,
+            text = it,
+            label = "Description"
+            ) {
+            description.value = it
+        }
+        }
         Spacer(modifier = Modifier.height(10.dp))
 
         LoginButton(text = "Select Image") {
@@ -138,9 +146,9 @@ fun AddBookScreen(
             saveBookToFirestore(
                 firestore,
                 Book(
-                    name = title.value,
-                    description = description.value,
-                    price = price.value,
+                    name = title.value.toString(),
+                    description = description.value.toString(),
+                    price = price.value.toString(),
                     category = selectedCategory,
                     imageUrl = imageToBase64(selectedImageUri.value!!, cv)
                 ),
